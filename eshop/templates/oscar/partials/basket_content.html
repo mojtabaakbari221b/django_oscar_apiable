@@ -1,0 +1,12 @@
+{% extends 'oscar/partials/basket_content.html.html' %}
+{% load i18n %}
+
+{% block formactions %}
+<div class="form-group clearfix">
+    <div class="row">
+        <div class="col-sm-4 offset-sm-8">
+            <a href="{% url 'checkout:go_to_gateway' %}" class="btn btn-lg btn-primary btn-block">{% trans "Proceed to checkout" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock formactions %}
