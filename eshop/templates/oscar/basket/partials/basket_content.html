@@ -157,12 +157,11 @@
         <div class="form-group clearfix">
             <div class="row">
                 <div class="col-sm-4 offset-sm-8">
-                    <a href="{% url 'checkout:index' %}" class="btn btn-lg btn-primary btn-block">{% trans "Proceed to checkout" %}</a>
+                    <a href="/go_to_gateway/" class="btn btn-lg btn-primary btn-block">{% trans "Proceed to checkout" %}</a>
                 </div>
             </div>
         </div>
     {% endblock formactions %}
-
 {% else %}
     {% block emptybasket %}
         <p>

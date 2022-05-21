@@ -6,39 +6,63 @@ from django.shortcuts import render
 from oscar.apps.checkout.views import PaymentDetailsView as CorePaymentDetailsView
 from oscar.apps.checkout import views
 from oscar.apps.checkout import models
+import logging
+from django.http import HttpResponse, Http404
+from azbankgateways import bankfactories, models as bank_models, default_settings as settings
+
 
 
 class PaymentDetailsView(CorePaymentDetailsView):
     template_name = 'oscar/checkout/payment_details.html'
-    def submit(self, user, basket, shipping_address, shipping_method,shipping_charge, billing_address, order_total,payment_kwargs=None, order_kwargs=None, surcharges=None):
-      return self.handle_order_placement(
-                 user, basket, shipping_address, shipping_method,
-                shipping_charge, billing_address, order_total, surcharges=surcharges, **order_kwargs)
+    def submit(self, order_total):
+        return order_total
 
-
-order_total = PaymentDetailsView()
-
-def go_to_gateway_view(request):
-    amount = 5000
-
-    # user_mobile_number = '+989112221234' 
-
+def go_to_gateway_view(request, *args, **kwargs):
+    total_amount = PaymentDetailsView()
+    amount = total_amount.submit(10000)
     factory = bankfactories.BankFactory()
     try:
-        bank = factory.auto_create() # or factory.create(bank_models.BankType.ZARINPAL) or set identifier
+        bank = factory.create(bank_models.BankType.ZARINPAL) # or factory.create(bank_models.BankType.ZARINPAL) or set identifier
         bank.set_request(request)
         bank.set_amount(amount)
-        # یو آر ال بازگشت به نرم افزار برای ادامه فرآیند
-        bank.set_client_callback_url(reverse('callback-gateway'))
-    
-        # در صورت تمایل اتصال این رکورد به رکورد فاکتور یا هر چیزی که بعدا بتوانید ارتباط بین محصول یا خدمات را با این
-        # پرداخت برقرار کنید. 
         bank_record = bank.ready()
         
-        # هدایت کاربر به درگاه بانک
         return bank.redirect_gateway()
     except AZBankGatewaysException as e:
         logging.critical(e)
-        # TODO: redirect to failed page.
         raise e
     
+def callback_gateway_view(request):
+    tracking_code = request.GET.get(settings.TRACKING_CODE_QUERY_PARAM, None)
+    if not tracking_code:
+        logging.debug("این لینک معتبر نیست.")
+        raise Http404
+
+    try:
+        bank_record = bank_models.Bank.objects.get(tracking_code=tracking_code)
+    except bank_models.Bank.DoesNotExist:
+        logging.debug("این لینک معتبر نیست.")
+        raise Http404
+
+    # در این قسمت باید از طریق داده هایی که در بانک رکورد وجود دارد، رکورد متناظر یا هر اقدام مقتضی دیگر را انجام دهیم
+    if bank_record.is_success:
+        # پرداخت با موفقیت انجام پذیرفته است و بانک تایید کرده است.
+        # می توانید کاربر را به صفحه نتیجه هدایت کنید یا نتیجه را نمایش دهید.
+        return HttpResponse("پرداخت با موفقیت انجام شد.")
+
+    # پرداخت موفق نبوده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.
+    return HttpResponse("پرداخت با شکست مواجه شده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.")
+
+factory = bankfactories.BankFactory()
+
+# غیر فعال کردن رکورد های قدیمی
+bank_models.Bank.objects.update_expire_records()
+
+# مشخص کردن رکوردهایی که باید تعیین وضعیت شوند
+for item in bank_models.Bank.objects.filter_return_from_bank():
+    bank = factory.create(bank_type=item.bank_type, identifier=item.bank_choose_identifier)
+    bank.verify(item.tracking_code)     
+    bank_record = bank_models.Bank.objects.get(tracking_code=item.tracking_code)
+    if bank_record.is_success:
+        logging.debug("This record is verify now.", extra={'pk': bank_record.pk})
+

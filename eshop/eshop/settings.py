@@ -83,6 +83,8 @@ INSTALLED_APPS = [
     'azbankgateways',
 ]
 
+SITE_ID = 1
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -200,14 +202,13 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    'GATEWAYS': {
 
        'ZARINPAL': {
-           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+           'MERCHANT_CODE': 'MERCHANT_CODE',
        },
    },
    'IS_SAMPLE_FORM_ENABLE': True, 
-   'DEFAULT': 'BMI',
+   'DEFAULT': 'ZARINPAL',
    'CURRENCY': 'IRR', 
-   'TRACKING_CODE_QUERY_PARAM': 'tc', 
-   'TRACKING_CODE_LENGTH': 16,  
+   'TRACKING_CODE_QUERY_PARAM': 'tc',  
    'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', # اختیاری
    'BANK_PRIORITIES': [
    ], 
