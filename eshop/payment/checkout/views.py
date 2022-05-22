@@ -19,14 +19,14 @@ class PaymentDetailsView(CorePaymentDetailsView):
 
 def go_to_gateway_view(request, *args, **kwargs):
     total_amount = PaymentDetailsView()
-    amount = total_amount.submit(order_total)
+    amount = total_amount.submit(10000)
     factory = bankfactories.BankFactory()
     try:
         bank = factory.create(bank_models.BankType.ZARINPAL) # or factory.create(bank_models.BankType.ZARINPAL) or set identifier
         bank.set_request(request)
         bank.set_amount(amount)
+        bank.set_client_callback_url('/callback-gateway/')
         bank_record = bank.ready()
-        
         return bank.redirect_gateway()
     except AZBankGatewaysException as e:
         logging.critical(e)
@@ -66,3 +66,4 @@ for item in bank_models.Bank.objects.filter_return_from_bank():
     if bank_record.is_success:
         logging.debug("This record is verify now.", extra={'pk': bank_record.pk})
 
+ 
