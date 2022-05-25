@@ -202,7 +202,7 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    'GATEWAYS': {
 
        'ZARINPAL': {
-           'MERCHANT_CODE': 'MERCHANT_CODE',
+           'MERCHANT_CODE': '8b0ccbe0-6b3c-4ad2-b02b-c34d6f713eef',
        },
    },
    'IS_SAMPLE_FORM_ENABLE': True, 
