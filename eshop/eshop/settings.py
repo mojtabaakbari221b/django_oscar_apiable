@@ -81,6 +81,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'django_tables2',
     'azbankgateways',
+    'rest_framework',
+    'oscarapi',
 ]
 
 SITE_ID = 1

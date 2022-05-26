@@ -148,7 +148,7 @@ class PaymentDetailsView(CorePaymentDetailsView):
 
 
 def go_to_gateway_view(request, *args, **kwargs):
-    amount = PaymentDetailsView
+    amount = 10000
     factory = bankfactories.BankFactory()
     try:
         bank = factory.create(bank_models.BankType.ZARINPAL) # or factory.create(bank_models.BankType.ZARINPAL) or set identifier
