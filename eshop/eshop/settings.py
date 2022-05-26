@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'azbankgateways',
     'rest_framework',
     'oscarapi',
+    'api',
 ]
 
 SITE_ID = 1

@@ -30,4 +30,5 @@ urlpatterns = [
     path('go_to_gateway/', go_to_gateway_view),
     path('callback-gateway/', callback_gateway_view),
     path('', include(apps.get_app_config('oscar').urls[0])),
+    path("api/", include("oscarapi.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
