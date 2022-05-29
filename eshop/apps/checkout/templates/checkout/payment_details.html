@@ -20,7 +20,7 @@
     {% block payment_details_content %}
         <p>{% trans "This page needs implementing within your project.  You may want to use one of Oscar's payment gateway libraries:" %}</p>
         <ul>
-            <li><a href="/go_to_gateway/">Zarrinpal Gateway</a></li>
+            <li><a href="{% url 'checkout:preview' %}">iranian gateways</a></li>
         </ul>
         <a id="view_preview" href="{% url 'checkout:preview' %}" class="btn btn-primary btn-lg">{% trans "Continue" %}</a>
     {% endblock payment_details_content %}

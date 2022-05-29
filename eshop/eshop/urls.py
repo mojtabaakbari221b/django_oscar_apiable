@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from azbankgateways.urls import az_bank_gateways_urls
-from payment.checkout.views import go_to_gateway_view
-from payment.checkout.views import callback_gateway_view
+from apps.checkout.views import go_to_gateway_view
+from apps.checkout.views import callback_gateway_view
 
 
 urlpatterns = [
