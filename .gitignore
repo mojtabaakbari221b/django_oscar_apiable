@@ -4,8 +4,8 @@ __pycache__/
 *$py.class
 
 # Django 
-db.sqlite3
-media
+eshop/db.sqlite3
+eshop/media/
 
 
 # C extensions
