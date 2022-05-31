@@ -18,17 +18,10 @@ from django.urls import include, path
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from azbankgateways.urls import az_bank_gateways_urls
-from apps.checkout.views import go_to_gateway_view
-from apps.checkout.views import callback_gateway_view
 
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
-    path('bankgateways/', az_bank_gateways_urls()),
-    path('go_to_gateway/', go_to_gateway_view),
-    path('callback-gateway/', callback_gateway_view),
     path('', include(apps.get_app_config('oscar').urls[0])),
-    path("api/", include("oscarapi.urls")),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
