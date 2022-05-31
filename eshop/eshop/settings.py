@@ -45,7 +45,9 @@ INSTALLED_APPS = [
 
     'oscar.config.Shop',
     'oscar.apps.analytics.apps.AnalyticsConfig',
-    'payment.checkout.apps.CheckoutConfig',
+    # 'oscar.apps.checkout.apps.CheckoutConfig',
+    'checkout.checkout.apps.CheckoutConfig',
+    # 'payment.checkout.apps.CheckoutConfig',
     'oscar.apps.address.apps.AddressConfig',
     'oscar.apps.shipping.apps.ShippingConfig',
     'oscar.apps.catalogue.apps.CatalogueConfig',
