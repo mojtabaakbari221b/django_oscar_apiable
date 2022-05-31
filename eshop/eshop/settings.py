@@ -45,9 +45,7 @@ INSTALLED_APPS = [
 
     'oscar.config.Shop',
     'oscar.apps.analytics.apps.AnalyticsConfig',
-    # 'oscar.apps.checkout.apps.CheckoutConfig',
-    'checkout.checkout.apps.CheckoutConfig',
-    # 'payment.checkout.apps.CheckoutConfig',
+    'apps.checkout.apps.CheckoutConfig',
     'oscar.apps.address.apps.AddressConfig',
     'oscar.apps.shipping.apps.ShippingConfig',
     'oscar.apps.catalogue.apps.CatalogueConfig',
@@ -85,7 +83,6 @@ INSTALLED_APPS = [
     'azbankgateways',
     'rest_framework',
     'oscarapi',
-    'api',
 ]
 
 SITE_ID = 1
@@ -205,15 +202,40 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AZ_IRANIAN_BANK_GATEWAYS = {
    'GATEWAYS': {
-
+       'BMI': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+           'TERMINAL_CODE': '<YOUR TERMINAL CODE>',
+           'SECRET_KEY': '<YOUR SECRET CODE>',
+       },
+       'SEP': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+           'TERMINAL_CODE': '<YOUR TERMINAL CODE>',
+       },
        'ZARINPAL': {
            'MERCHANT_CODE': '8b0ccbe0-6b3c-4ad2-b02b-c34d6f713eef',
        },
+       'IDPAY': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+           'METHOD': 'POST',  # GET or POST
+           'X_SANDBOX': 0,  # 0 disable, 1 active
+       },
+       'ZIBAL': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+       },
+       'BAHAMTA': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+       },
+       'MELLAT': {
+           'TERMINAL_CODE': '<YOUR TERMINAL CODE>',
+           'USERNAME': '<YOUR USERNAME>',
+           'PASSWORD': '<YOUR PASSWORD>',
+       },
    },
-   'IS_SAMPLE_FORM_ENABLE': True, 
+   'IS_SAMPLE_FORM_ENABLE': True, # اختیاری و پیش فرض غیر فعال است
    'DEFAULT': 'ZARINPAL',
-   'CURRENCY': 'IRR', 
-   'TRACKING_CODE_QUERY_PARAM': 'tc',  
+   'CURRENCY': 'IRR', # اختیاری
+   'TRACKING_CODE_QUERY_PARAM': 'tc', # اختیاری
+   'TRACKING_CODE_LENGTH': 16, # اختیاری
    'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', # اختیاری
    'BANK_PRIORITIES': [
    ], 
