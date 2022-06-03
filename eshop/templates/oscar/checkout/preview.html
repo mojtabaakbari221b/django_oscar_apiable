@@ -18,12 +18,6 @@
         {% csrf_token %}
         <input type="hidden" name="action" value="place_order" />
 
-        {% comment %}
-            When submitting sensitive data on the payment details page (eg a bankcard)
-            we don't want to save the data and so we pass the bound form to the preview
-            template and render it in a hidden div.  Then the payment information will
-            get re-submitted when the user confirms the order.
-        {% endcomment %}
         <div style="display:none">
             {% block hiddenforms %}{% endblock %}
         </div>
@@ -37,3 +31,5 @@
         </div>
     </form>
 {% endblock place_order %}
+
+{% block payment_details %}<h3>hejeiufiwjhfc</h3>{% endblock payment_details %}

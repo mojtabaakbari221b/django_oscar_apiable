@@ -9,13 +9,24 @@ from django.views.generic.base import View
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from oscar.core.loading import get_class
+from azbankgateways.banks import bmi
 
 
+class IranianGateways():
+    template_name = 'preview.html'
+    contrxt = {'bmi':bmi}
 
 class PaymentDetailsView(CorePaymentDetailsView):
+    def handle_place_order_submission(self, request):
+        return self.submit(**self.build_submission())
+
+    def handle_payment_details_submission(self, request):
+        return self.render_preview(request)
+
     def submit(self, user, basket, shipping_address, shipping_method,  # noqa (too complex (10))
                shipping_charge, billing_address, order_total,
                payment_kwargs=None, order_kwargs=None, surcharges=None):
+
         if payment_kwargs is None:
             payment_kwargs = {}
         if order_kwargs is None:
@@ -101,8 +112,9 @@ class PaymentDetailsView(CorePaymentDetailsView):
         logger.info("Order #%s: payment successful, placing order",
                     order_number)
         try:
-            return self.go_to_gateway_view(request, order_total)
-        except UnableToPlaceOrder as e:
+            return self.handle_order_placement(
+                order_number, user, basket, shipping_address, shipping_method,
+                shipping_charge, billing_address, order_total, surcharges=surcharges, **order_kwargs)
             # It's possible that something will go wrong while trying to
             # actually place an order.  Not a good situation to be in as a
             # payment transaction may already have taken place, but needs
