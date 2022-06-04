@@ -3,18 +3,68 @@ from django.urls import reverse
 from azbankgateways import bankfactories, models as bank_models, default_settings as settings
 from azbankgateways.exceptions import AZBankGatewaysException
 from oscar.apps.checkout.views import PaymentDetailsView as CorePaymentDetailsView
+from oscar.apps.checkout.views import PaymentMethodView as CorePaymentMethodView
 import logging
 from django.http import HttpResponse, Http404
 from django.views.generic.base import View
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
+from django.views.generic import FormView
+from . import forms
+from django.urls import reverse_lazy
+from django.conf import settings
+from eshop.settings import OSCAR_PAYMENT_METHODS
 from oscar.core.loading import get_class
 from azbankgateways.banks import bmi
 
 
-class IranianGateways():
-    template_name = 'preview.html'
-    contrxt = {'bmi':bmi}
+
+class PaymentMethodView(CorePaymentMethodView, FormView):
+    """
+    View for a user to choose which payment method(s) they want to use.
+
+    This would include setting allocations if payment is to be split
+    between multiple sources. It's not the place for entering sensitive details
+    like bankcard numbers though - that belongs on the payment details view.
+    """
+    template_name = "checkout/payment_method.html"
+    step = 'payment-method'
+    form_class = forms.PaymentMethodForm
+    success_url = reverse_lazy('checkout:payment-details')
+
+    pre_conditions = [
+        'check_basket_is_not_empty',
+        'check_basket_is_valid',
+        'check_user_email_is_captured',
+        'check_shipping_data_is_captured',
+        'check_payment_data_is_captured',
+    ]
+    skip_conditions = ['skip_unless_payment_is_required']
+
+    def get(self, request, *args, **kwargs):
+        # if only single payment method, store that
+        # and then follow default (redirect to preview)
+        # else show payment method choice form
+        if len(settings.OSCAR_PAYMENT_METHODS) == 1:
+            self.checkout_session.pay_by(settings.OSCAR_PAYMENT_METHODS[0][0])
+            return redirect(self.get_success_url())
+        else:
+            return FormView.get(self, request, *args, **kwargs)
+
+    def get_success_url(self, *args, **kwargs):
+        # Redirect to the correct payments page as per the method (different methods may have different views &/or additional views)
+        return reverse_lazy('checkout:preview')
+
+    def get_initial(self):
+        return {
+            'payment_method': self.checkout_session.payment_method(),
+        }
+
+    def form_valid(self, form):
+        # Store payment method in the CheckoutSessionMixin.checkout_session (a CheckoutSessionData object)
+        self.checkout_session.pay_by(form.cleaned_data['payment_method'])
+        return super().form_valid(form)
+
 
 class PaymentDetailsView(CorePaymentDetailsView):
     def handle_place_order_submission(self, request):
@@ -132,6 +182,11 @@ class PaymentDetailsView(CorePaymentDetailsView):
             self.restore_frozen_basket()
             return self.render_preview(self.request, error=error_msg, **payment_kwargs)
 
+    def get_context_data(self, **kwargs):
+        ctx = super(PaymentDetailsView, self).get_context_data(**kwargs)
+        payment_method = self.checkout_session.payment_method()
+        ctx.update({'payment_method': payment_method})
+        return ctx
 
 
     def go_to_gateway_view(self, request, order_total):

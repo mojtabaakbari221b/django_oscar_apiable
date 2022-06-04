@@ -240,3 +240,13 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    'BANK_PRIORITIES': [
    ], 
 }
+
+OSCAR_PAYMENT_METHODS = (
+    ('Bmi', ('melli bank ')),
+    ('Sep', ('sepah bank')),
+    ('Zarinpal', ('zarinpal')),
+    ('Idpay', ('idpay')),
+    ('Zibal', ('zibal')),
+    ('Bahamta', ('bahamta')),
+    ('Mellat', ('mellat')),
+)
