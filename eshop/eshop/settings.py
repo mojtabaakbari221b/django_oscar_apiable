@@ -14,6 +14,7 @@ from pathlib import Path
 from oscar.defaults import *
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -239,4 +240,19 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', # اختیاری
    'BANK_PRIORITIES': [
    ], 
-}
+
+
+
+OSCAR_PAYMENT_METHODS = (
+    ('Bmi', ('melli bank ')),
+    ('Sep', ('sepah bank')),
+    ('Zarinpal', ('zarinpal')),
+    ('Idpay', ('idpay')),
+    ('Zibal', ('zibal')),
+    ('Bahamta', ('bahamta')),
+    ('Mellat', ('mellat')),
+)
+
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_DOMAIN = 'localhost' #change it to your domain in prod env.
+
