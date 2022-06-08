@@ -27,5 +27,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(apps.get_app_config('oscar').urls[0])),
     path('bankgateways/', az_bank_gateways_urls()),
-    path('gateway-callback/', GateWayCallBack.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
