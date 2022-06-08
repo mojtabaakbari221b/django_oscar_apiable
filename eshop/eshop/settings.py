@@ -240,7 +240,8 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', # اختیاری
    'BANK_PRIORITIES': [
    ], 
-}
+
+
 
 OSCAR_PAYMENT_METHODS = (
     ('Bmi', ('melli bank ')),

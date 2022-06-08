@@ -22,6 +22,7 @@ from azbankgateways.urls import az_bank_gateways_urls
 from apps.checkout.views import GateWayCallBack
 
 
+
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),

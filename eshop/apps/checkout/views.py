@@ -3,6 +3,9 @@ from django.urls import reverse
 from azbankgateways import bankfactories, models as bank_models, default_settings as settings
 from azbankgateways.exceptions import AZBankGatewaysException
 from oscar.apps.checkout.views import PaymentDetailsView as CorePaymentDetailsView
+import logging
+from django.http import HttpResponse, Http404
+from django.views.generic.base import View
 from oscar.apps.checkout.views import PaymentMethodView as CorePaymentMethodView
 import logging
 from django.http import HttpResponse, Http404
@@ -69,6 +72,7 @@ class PaymentDetailsView(CorePaymentDetailsView):
     def submit(self, user, basket, shipping_address, shipping_method,  # noqa (too complex (10))
                shipping_charge, billing_address, order_total,
                payment_kwargs=None, order_kwargs=None, surcharges=None):
+        pass
         logger = logging.getLogger('oscar.checkout')
 
         if payment_kwargs is None:
@@ -148,7 +152,11 @@ class PaymentDetailsView(CorePaymentDetailsView):
         
             # در صورت تمایل اتصال این رکورد به رکورد فاکتور یا هر چیزی که بعدا بتوانید ارتباط بین محصول یا خدمات را با این
             # پرداخت برقرار کنید. 
+
+            # bank_record = bank.ready()
+
             bank_record = bank.ready()
+
             
             # هدایت کاربر به درگاه بانک
             return bank.redirect_gateway()
@@ -157,7 +165,6 @@ class PaymentDetailsView(CorePaymentDetailsView):
             # TODO: redirect to failed page.
             raise e
         return render(request)
-
 
 class GateWayCallBack(View):
     def get(self, request):
@@ -179,5 +186,9 @@ class GateWayCallBack(View):
             return HttpResponse("پرداخت با موفقیت انجام شد.")
 
         # پرداخت موفق نبوده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.
+
         return HttpResponse("پرداخت با شکست مواجه شده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.")
+
+        return HttpResponse("پرداخت با شکست مواجه شده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.")
+
 
