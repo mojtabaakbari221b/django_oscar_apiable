@@ -72,7 +72,6 @@ class PaymentDetailsView(CorePaymentDetailsView):
     def submit(self, user, basket, shipping_address, shipping_method,  # noqa (too complex (10))
                shipping_charge, billing_address, order_total,
                payment_kwargs=None, order_kwargs=None, surcharges=None):
-        pass
         logger = logging.getLogger('oscar.checkout')
 
         if payment_kwargs is None:
@@ -95,6 +94,7 @@ class PaymentDetailsView(CorePaymentDetailsView):
             self.checkout_session.set_order_number(order_number)
             logger.info("Order #%s: beginning submission process for basket #%d",
                         order_number, basket.id)
+            # //
             method = self.checkout_session.payment_method()
             if method == 'payment_method':
                 return self.handle_payment(order_number, order_total, **payment_kwargs)
